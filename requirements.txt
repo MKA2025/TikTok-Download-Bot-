@@ -1,0 +1,5 @@
+python-telegram-bot==20.0  # Telegram Bot API wrapper
+requests==2.26.0            # For making HTTP requests to TikTok
+beautifulsoup4==4.10.0      # For parsing HTML content
+lxml==4.6.3                 # Required by BeautifulSoup for parsing
+python-dotenv==0.19.2       # For loading environment variables from .env file
