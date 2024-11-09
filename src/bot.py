@@ -32,13 +32,19 @@ def start(update: Update, context: CallbackContext):
 def download_video(update: Update, context: CallbackContext):
     """Download the TikTok video from the provided link."""
     video_url = update.message.text
-    log_message(f"Received video URL: {video_url}")
+    quality = context.args[0] if context.args else 'high'  # Default to 'high' quality if not specified
+    log_message(f"Received video URL: {video_url} with quality: {quality}")
 
-    # Here you would implement the logic to download the TikTok video
+    # Validate quality input
+    valid_qualities = ['low', 'medium', 'high']
+    if quality not in valid_qualities:
+        update.message.reply_text("Invalid quality specified. Please use 'low', 'medium', or 'high'.")
+        return
+
     try:
         # Example: Use a TikTok video downloader API or library
-        # This is a placeholder for the actual download logic
-        response = requests.get(video_url)
+        api_url = f'https://api.tikwm.com/video?url={video_url}&quality={quality}'  # Hypothetical API endpoint
+        response = requests.get(api_url)
 
         if response.status_code == 200:
             # Assuming the response contains the video data
