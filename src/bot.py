@@ -1,9 +1,9 @@
 import os
 import logging
+import requests
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from dotenv import load_dotenv
-import requests
 
 # Load environment variables from .env file
 load_dotenv()
@@ -34,14 +34,34 @@ def download_video(update: Update, context: CallbackContext):
     video_url = update.message.text
     log_message(f"Received video URL: {video_url}")
 
-    # Add logic to download the TikTok video here
-    # Example: video_data = requests.get(video_url)
+    # Here you would implement the logic to download the TikTok video
+    try:
+        # Example: Use a TikTok video downloader API or library
+        # This is a placeholder for the actual download logic
+        response = requests.get(video_url)
 
-    # Send the video back to the user
-    # update.message.reply_video(video_data)
+        if response.status_code == 200:
+            # Assuming the response contains the video data
+            video_file_path = 'downloaded_video.mp4'  # Temporary file path
+            with open(video_file_path, 'wb') as video_file:
+                video_file.write(response.content)
 
-    # Delete the video after sending
-    # os.remove(video_path)  # Replace video_path with your video file path
+            # Send the video back to the user
+            with open(video_file_path, 'rb') as video_file:
+                update.message.reply_video(video_file)
+
+            # Log the successful download
+            log_message(f"Video downloaded and sent to {update.effective_user.username}")
+
+            # Delete the video after sending
+            os.remove(video_file_path)
+        else:
+            update.message.reply_text("Failed to download the video. Please check the link.")
+            log_message(f"Failed to download video from {video_url}: {response.status_code}")
+
+    except Exception as e:
+        update.message.reply_text("An error occurred while downloading the video.")
+        log_message(f"Error downloading video: {e}")
 
 # Register command handlers
 dispatcher.add_handler(CommandHandler("start", start))
